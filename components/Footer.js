@@ -2,16 +2,12 @@
 import styled from 'styled-components';
 
 const FooterWrapper = styled.footer`
-  background-color: #333;
-  color: white;
-  padding: 10px;
   text-align: center;
+  padding: 15px;
+  background-color: ${(props) => props.theme.primary};
+  color: white;
 `;
 
-const Footer = () => (
-  <FooterWrapper>
-    <p>© 2025 Let’s Study Together. All rights reserved.</p>
-  </FooterWrapper>
-);
-
-export default Footer;
+export default function Footer() {
+  return <FooterWrapper>© 2025 Let’s Study Together</FooterWrapper>;
+}

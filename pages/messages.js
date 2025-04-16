@@ -1,7 +1,7 @@
 // pages/messages.js
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const PageContainer = styled.div`
@@ -14,15 +14,14 @@ const MessagesContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   max-height: 400px;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 const MessageItem = styled.div`
   padding: 10px;
-  background-color: #f1f1f1;
+  color: black;
+  background-color:rgb(249, 251, 250);
   border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  max-width: 80%;
 `;
 
 const MessageForm = styled.form`
@@ -49,60 +48,50 @@ const SendButton = styled.button`
   font-size: 16px;
 
   &:hover {
-    background-color: #005bb5;
+    background-color: #0051a3;
   }
 `;
 
-const Heading = styled.h2`
-  color: #333;
-`;
+export default function Messages() {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
 
-const MessagesPage = () => {
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    { id: 1, text: 'Hello, welcome to the study group!' },
-    { id: 2, text: 'Hi, how is everyone doing today?' },
-  ]); // Temporary static messages array
+  useEffect(() => {
+    setMessages([
+      { id: 1, text: 'Welcome to the study group!' },
+      { id: 2, text: 'Let’s focus on the assignment due next week.' }
+    ]);
+  }, []);
 
-  // Handle sending a message
-  const handleSendMessage = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (message.trim()) {
-      setMessages([...messages, { id: messages.length + 1, text: message }]);
-      setMessage('');
-    }
+    if (!newMessage.trim()) return;
+
+    setMessages([...messages, { id: Date.now(), text: newMessage }]);
+    setNewMessage('');
   };
 
   return (
-    <div>
+    <>
       <Navbar />
       <PageContainer>
-        <Heading>Messages</Heading>
-        <p>Chat with your study group members in real-time!</p>
-
-        {/* Messages Container */}
+        <h1>Messages</h1>
         <MessagesContainer>
           {messages.map((msg) => (
-            <MessageItem key={msg.id}>
-              <p>{msg.text}</p>
-            </MessageItem>
+            <MessageItem key={msg.id}>{msg.text}</MessageItem>
           ))}
         </MessagesContainer>
-
-        {/* Send Message Form */}
-        <MessageForm onSubmit={handleSendMessage}>
+        <MessageForm onSubmit={handleSubmit}>
           <MessageInput
             type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type a message..."
+            placeholder="Type your message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
           />
           <SendButton type="submit">Send</SendButton>
         </MessageForm>
       </PageContainer>
       <Footer />
-    </div>
+    </>
   );
-};
-
-export default MessagesPage;
+}

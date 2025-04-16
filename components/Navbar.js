@@ -1,60 +1,43 @@
 // components/Navbar.js
-import React from 'react';
 import Link from 'next/link';
+import { useTheme } from '../context/ThemeContext';
 import styled from 'styled-components';
 
-// Styled-components for Navbar
-const NavBarContainer = styled.nav`
-  background-color:rgb(0, 0, 1);
-  padding: 15px 0;
-  text-align: center;
-  font-family: Arial, sans-serif;
-`;
-
-const NavList = styled.ul`
-  list-style: none;
+const Nav = styled.nav`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 0;
-  margin: 0;
+  background-color: ${(props) => props.theme.primary};
+  padding: 10px 20px;
+  color: white;
 `;
 
-const NavItem = styled.li`
-  margin: 0 20px;
+const NavLinks = styled.div`
+  display: flex;
+  gap: 15px;
 `;
 
-const NavLink = styled(Link)`
-  text-decoration: none;
-  color: white;  // Text color is now white
-  font-size: 18px;
-  font-weight: 600;
-  transition: color 0.3s ease;
+export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
 
-  &:hover {
-    color: #ffcc00;  // Optional: color changes to yellow on hover for better UX
-  }
-`;
-
-const Navbar = () => {
   return (
-    <NavBarContainer>
-      <NavList>
-        <NavItem>
-          <NavLink href="/">Home</NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink href="/study-groups">Study Groups</NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink href="/messages">Messages</NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink href="/profile">Profile</NavLink>
-        </NavItem>
-      </NavList>
-    </NavBarContainer>
+    <Nav>
+      <NavLinks>
+        <Link href="/">Home</Link>
+        <Link href="/messages">Messages</Link>
+        <Link href="/progress">Progress</Link>
+        <Link href="/study-groups">Study Groups</Link>
+      </NavLinks>
+      <button onClick={toggleTheme} style={{
+        padding: '6px 12px',
+        border: 'none',
+        borderRadius: '5px',
+        backgroundColor: '#fff',
+        color: '#000',
+        cursor: 'pointer'
+      }}>
+        {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+      </button>
+    </Nav>
   );
-};
-
-export default Navbar;
+}

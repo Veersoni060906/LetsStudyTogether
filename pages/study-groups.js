@@ -1,113 +1,115 @@
-// pages/study-groups.js
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { useState } from 'react';
 import styled from 'styled-components';
+import { useState } from 'react';
 
-const PageContainer = styled.div`
-  padding: 20px;
+const Container = styled.div`
+  padding: 40px;
 `;
 
-const FormContainer = styled.div`
+const StudyGroupTitle = styled.h1`
+  color: ${(props) => props.theme.primary};
+  text-align: center;
+  margin-bottom: 30px;
+`;
+
+const GroupList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-top: 20px;
+`;
+
+const GroupItem = styled.div`
+  background-color: ${(props) => props.theme.background === '#111111' ? '#222' : '#f9f9f9'};
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
 `;
 
 const Button = styled.button`
-  background-color: #0070f3;
+  padding: 8px 14px;
+  background-color: ${(props) => props.theme.primary};
   color: white;
-  padding: 10px;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
+  margin-top: 10px;
 
   &:hover {
-    background-color: #005bb5;
+    opacity: 0.85;
   }
+`;
+
+const Form = styled.form`
+  margin-bottom: 30px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 `;
 
 const Input = styled.input`
   padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
+  flex: 1;
+  border-radius: 6px;
   border: 1px solid #ccc;
 `;
 
-const Heading = styled.h2`
-  color: #333;
-`;
+export default function StudyGroups() {
+  const [groups, setGroups] = useState([
+    { id: 1, name: 'Math Buddies', members: 5 },
+    { id: 2, name: 'Science Explorers', members: 8 },
+    { id: 3, name: 'History Geeks', members: 4 },
+  ]);
 
-const StudyGroupsPage = () => {
   const [groupName, setGroupName] = useState('');
-  const [joinCode, setJoinCode] = useState('');
-  const [message, setMessage] = useState('');
 
-  // Handle form submission for creating a group
-  const handleCreateGroup = (e) => {
+  const createGroup = (e) => {
     e.preventDefault();
-    if (groupName.trim()) {
-      setMessage(`Group '${groupName}' has been created successfully!`);
-      setGroupName('');
-    } else {
-      setMessage('Please enter a group name!');
-    }
+    if (!groupName.trim()) return;
+
+    const newGroup = {
+      id: Date.now(),
+      name: groupName.trim(),
+      members: 1,
+    };
+
+    setGroups([newGroup, ...groups]);
+    setGroupName('');
   };
 
-  // Handle form submission for joining a group
-  const handleJoinGroup = (e) => {
-    e.preventDefault();
-    if (joinCode.trim()) {
-      setMessage(`Joined group with code: ${joinCode}`);
-      setJoinCode('');
-    } else {
-      setMessage('Please enter a valid group code!');
-    }
+  const joinGroup = (id) => {
+    setGroups(groups.map((group) =>
+      group.id === id ? { ...group, members: group.members + 1 } : group
+    ));
   };
 
   return (
-    <div>
+    <>
       <Navbar />
-      <PageContainer>
-        <Heading>Study Groups</Heading>
-        <p>Create or join study groups with ease!</p>
+      <Container>
+        <StudyGroupTitle>Study Groups</StudyGroupTitle>
 
-        {/* Group Creation Form */}
-        <FormContainer>
-          <h3>Create a Group</h3>
-          <form onSubmit={handleCreateGroup}>
-            <Input
-              type="text"
-              placeholder="Enter group name"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-            />
-            <Button type="submit">Create Group</Button>
-          </form>
-        </FormContainer>
+        <Form onSubmit={createGroup}>
+          <Input
+            type="text"
+            placeholder="Enter new group name"
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+          />
+          <Button type="submit">Create Group</Button>
+        </Form>
 
-        {/* Group Joining Form */}
-        <FormContainer>
-          <h3>Join a Group</h3>
-          <form onSubmit={handleJoinGroup}>
-            <Input
-              type="text"
-              placeholder="Enter group code"
-              value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value)}
-            />
-            <Button type="submit">Join Group</Button>
-          </form>
-        </FormContainer>
-
-        {/* Message */}
-        {message && <p>{message}</p>}
-      </PageContainer>
+        <GroupList>
+          {groups.map((group) => (
+            <GroupItem key={group.id}>
+              <h2>{group.name}</h2>
+              <p>Members: {group.members}</p>
+              <Button onClick={() => joinGroup(group.id)}>Join Group</Button>
+            </GroupItem>
+          ))}
+        </GroupList>
+      </Container>
       <Footer />
-    </div>
+    </>
   );
-};
-
-export default StudyGroupsPage;
+}
